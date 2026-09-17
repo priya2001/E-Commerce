@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginUser } from '../services/authApi'
 
-const Login = ({ onSwitchToRegister }) => {
+const Login = ({ onSwitchToRegister, onLogin }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,6 +28,7 @@ const Login = ({ onSwitchToRegister }) => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('authUser', JSON.stringify(data.user));
       setMessage(data.message || 'Login successful');
+      onLogin(data.user);
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {

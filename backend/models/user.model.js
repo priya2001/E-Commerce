@@ -13,6 +13,16 @@ const userSchema = new mongoose.Schema({
         unique:true,
         trim:true,
     },
+    phone:{
+        type:String,
+        default:"",
+        trim:true,
+    },
+    gender:{
+        type:String,
+        enum:["male","female","other",""],
+        default:"",
+    },
     password:{
         type:String,
         required:true,
@@ -28,6 +38,6 @@ const userSchema = new mongoose.Schema({
     timestamps:true,
 });
 
-const User =mongoose.model("User",userSchema);
+const User = mongoose.model("User",userSchema);
 
 export default User;

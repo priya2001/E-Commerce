@@ -21,3 +21,27 @@ const requestJson = async (path, payload) => {
 export const loginUser = (payload) => requestJson('/api/auth/login', payload)
 
 export const registerUser = (payload) => requestJson('/api/auth/register', payload)
+
+const profileRequest = async (method, payload) => {
+  const token = localStorage.getItem('authToken')
+  const response = await fetch(`${API_BASE_URL}/api/users/profile`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    ...(payload ? { body: JSON.stringify(payload) } : {}),
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Request failed')
+  }
+
+  return data
+}
+
+export const getProfile = () => profileRequest('GET')
+
+export const updateProfile = (payload) => profileRequest('PUT', payload)
