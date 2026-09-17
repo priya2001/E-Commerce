@@ -2,6 +2,7 @@ import Login from './pages/login'
 import Register from './pages/register'
 import Profile from './pages/profile'
 import Header from './components/Header'
+import VerifyOtp from './pages/verifyOtp'
 import { useState } from 'react'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(() =>
     JSON.parse(localStorage.getItem('authUser') || 'null'),
   )
+  const [verificationEmail, setVerificationEmail] = useState('')
 
   const handleLogout = () => {
     localStorage.removeItem('authToken')
@@ -31,7 +33,13 @@ function App() {
   return (
     <main className="auth-page">
       <section className="auth-card">
-        {authView === 'login' ? (
+        {authView === 'otp' ? (
+          <VerifyOtp
+            email={verificationEmail}
+            onVerified={() => setAuthView('login')}
+            onBack={() => setAuthView('register')}
+          />
+        ) : authView === 'login' ? (
           <Login
             onSwitchToRegister={() => setAuthView('register')}
             onLogin={(user) => {
@@ -40,7 +48,13 @@ function App() {
             }}
           />
         ) : (
-          <Register onSwitchToLogin={() => setAuthView('login')} />
+          <Register
+            onSwitchToLogin={() => setAuthView('login')}
+            onRegistered={(email) => {
+              setVerificationEmail(email)
+              setAuthView('otp')
+            }}
+          />
         )}
       </section>
     </main>

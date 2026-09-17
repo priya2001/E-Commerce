@@ -7,8 +7,8 @@ function Profile({ onLogout, onProfileUpdated }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
+  const [, setMessage] = useState('')
+  const [, setError] = useState('')
 
   useEffect(() => {
     const loadProfile = async () => {

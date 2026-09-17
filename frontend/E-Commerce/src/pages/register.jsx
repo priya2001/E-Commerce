@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerUser } from '../services/authApi'
 
-function Register({ onSwitchToLogin }) {
+function Register({ onSwitchToLogin, onRegistered }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,6 +27,7 @@ function Register({ onSwitchToLogin }) {
     try {
       const data = await registerUser(formData);
       setMessage(data.message || 'Registration successful');
+      onRegistered(formData.email);
       setFormData({ name: '', email: '', password: '' });
     } catch (err) {
       setError(err.message || 'Registration failed');

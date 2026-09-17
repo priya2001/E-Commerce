@@ -36,6 +36,10 @@ const login = async (userData) => {
         throw new Error("invalid credentials");
     }
 
+    if (user.isVerified === false) {
+        throw new Error("Please verify your OTP before login");
+    }
+
     const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET || "jwt_secret_key",
@@ -45,4 +49,28 @@ const login = async (userData) => {
     return { user, token };
 };
 
-export default { register, login };
+const verifyOtp = async (userData) => {
+    const { email, otp } = userData;
+
+    if (!email || !otp) {
+        throw new Error("Email and OTP are required");
+    }
+
+    if (otp !== "123456") {
+        throw new Error("Invalid OTP");
+    }
+
+    const user = await userRepository.findUserByEmail(email);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.isVerified) {
+        return user;
+    }
+
+    return await userRepository.verifyUser(email);
+};
+
+export default { register, login, verifyOtp };

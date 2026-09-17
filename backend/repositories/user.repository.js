@@ -8,4 +8,12 @@ const createUser = async (userData) => {
   return await User.create(userData);
 };
 
-export default {findUserByEmail,createUser};
+const verifyUser = async (email) => {
+  return await User.findOneAndUpdate(
+    { email },
+    { isVerified: true },
+    { new: true }
+  );
+};
+
+export default {findUserByEmail,createUser,verifyUser};

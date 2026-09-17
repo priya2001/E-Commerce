@@ -22,6 +22,8 @@ export const loginUser = (payload) => requestJson('/api/auth/login', payload)
 
 export const registerUser = (payload) => requestJson('/api/auth/register', payload)
 
+export const verifyOtp = (payload) => requestJson('/api/auth/verify-otp', payload)
+
 const profileRequest = async (method, payload) => {
   const token = localStorage.getItem('authToken')
   const response = await fetch(`${API_BASE_URL}/api/users/profile`, {
