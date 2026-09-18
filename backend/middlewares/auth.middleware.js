@@ -18,6 +18,7 @@ const protect = (req, res, next) => {
         );
 
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     } catch (error) {
         return res.status(401).json({
