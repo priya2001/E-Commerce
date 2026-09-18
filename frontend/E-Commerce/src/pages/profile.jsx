@@ -1,5 +1,67 @@
 import { useEffect, useState } from 'react'
+import {
+  FiBell,
+  FiChevronRight,
+  FiCreditCard,
+  FiFileText,
+  FiGift,
+  FiHeart,
+  FiLogOut,
+  FiMapPin,
+  FiPackage,
+  FiPercent,
+  FiStar,
+  FiUser,
+} from 'react-icons/fi'
 import { getProfile, updateProfile } from '../services/authApi'
+
+const sectionDetails = {
+  orders: {
+    title: 'My Orders',
+    icon: FiPackage,
+    message: 'You have not placed any orders yet.',
+  },
+  addresses: {
+    title: 'Manage Addresses',
+    icon: FiMapPin,
+    message: 'No delivery address has been saved yet.',
+  },
+  pan: {
+    title: 'PAN Card Information',
+    icon: FiFileText,
+    message: 'No PAN card information has been added.',
+  },
+  giftCards: {
+    title: 'Gift Cards',
+    icon: FiGift,
+    message: 'You do not have any gift cards.',
+  },
+  upi: {
+    title: 'Saved UPI',
+    icon: FiCreditCard,
+    message: 'No UPI ID has been saved.',
+  },
+  coupons: {
+    title: 'My Coupons',
+    icon: FiPercent,
+    message: 'There are no available coupons in your account.',
+  },
+  reviews: {
+    title: 'My Reviews & Ratings',
+    icon: FiStar,
+    message: 'You have not reviewed any products yet.',
+  },
+  notifications: {
+    title: 'All Notifications',
+    icon: FiBell,
+    message: 'You do not have any new notifications.',
+  },
+  wishlist: {
+    title: 'My Wishlist',
+    icon: FiHeart,
+    message: 'Your wishlist is currently empty.',
+  },
+}
 
 function Profile({ onLogout, onProfileUpdated }) {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', gender: '' })
@@ -7,6 +69,7 @@ function Profile({ onLogout, onProfileUpdated }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const [activeSection, setActiveSection] = useState('profile')
   const [, setMessage] = useState('')
   const [, setError] = useState('')
 
@@ -61,6 +124,7 @@ function Profile({ onLogout, onProfileUpdated }) {
   }
 
   const initial = formData.name?.charAt(0).toUpperCase() || 'U'
+  const ActiveSectionIcon = sectionDetails[activeSection]?.icon
 
   const cancelEditing = () => {
     if (savedProfile) setFormData(savedProfile)
@@ -79,35 +143,40 @@ function Profile({ onLogout, onProfileUpdated }) {
         </div>
 
         <div className="account-menu">
-          <button type="button" className="menu-heading">
-            <span className="menu-icon"></span><span>MY ORDERS</span><span className="menu-arrow">›</span>
+          <button
+            type="button"
+            className={`menu-heading ${activeSection === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveSection('orders')}
+          >
+            <span className="menu-icon"><FiPackage /></span><span>MY ORDERS</span><FiChevronRight className="menu-arrow" />
           </button>
 
           <section className="menu-section">
-            <h2><span className="menu-icon"></span> ACCOUNT SETTINGS</h2>
-            <button type="button" className="menu-item active">Profile Information</button>
-            <button type="button" className="menu-item">Manage Addresses</button>
-            <button type="button" className="menu-item">PAN Card Information</button>
+            <h2><span className="menu-icon"><FiUser /></span> ACCOUNT SETTINGS</h2>
+            <button type="button" className={`menu-item ${activeSection === 'profile' ? 'active' : ''}`} onClick={() => setActiveSection('profile')}>Profile Information</button>
+            <button type="button" className={`menu-item ${activeSection === 'addresses' ? 'active' : ''}`} onClick={() => setActiveSection('addresses')}>Manage Addresses</button>
+            <button type="button" className={`menu-item ${activeSection === 'pan' ? 'active' : ''}`} onClick={() => setActiveSection('pan')}>PAN Card Information</button>
           </section>
 
           <section className="menu-section">
-            <h2><span className="menu-icon"></span> PAYMENTS</h2>
-            <button type="button" className="menu-item">Gift Cards</button>
-            <button type="button" className="menu-item">Saved UPI</button>
+            <h2><span className="menu-icon"><FiCreditCard /></span> PAYMENTS</h2>
+            <button type="button" className={`menu-item ${activeSection === 'giftCards' ? 'active' : ''}`} onClick={() => setActiveSection('giftCards')}>Gift Cards</button>
+            <button type="button" className={`menu-item ${activeSection === 'upi' ? 'active' : ''}`} onClick={() => setActiveSection('upi')}>Saved UPI</button>
           </section>
 
           <section className="menu-section">
-            <h2><span className="menu-icon"></span> MY STUFF</h2>
-            <button type="button" className="menu-item">My Coupons</button>
-            <button type="button" className="menu-item">My Reviews & Ratings</button>
-            <button type="button" className="menu-item">All Notifications</button>
-            <button type="button" className="menu-item">My Wishlist</button>
+            <h2><span className="menu-icon"><FiHeart /></span> MY STUFF</h2>
+            <button type="button" className={`menu-item ${activeSection === 'coupons' ? 'active' : ''}`} onClick={() => setActiveSection('coupons')}>My Coupons</button>
+            <button type="button" className={`menu-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}>My Reviews & Ratings</button>
+            <button type="button" className={`menu-item ${activeSection === 'notifications' ? 'active' : ''}`} onClick={() => setActiveSection('notifications')}>All Notifications</button>
+            <button type="button" className={`menu-item ${activeSection === 'wishlist' ? 'active' : ''}`} onClick={() => setActiveSection('wishlist')}>My Wishlist</button>
           </section>
 
-          <button className="sidebar-logout" type="button" onClick={onLogout}> <span className="menu-icon"></span>Logout </button>
+          <button className="sidebar-logout" type="button" onClick={onLogout}><span className="menu-icon"><FiLogOut /></span>Logout</button>
         </div>
       </aside>
 
+      {activeSection === 'profile' ? (
       <section className="profile-panel">
         <div className="profile-title-row">
           <h1>Personal Information</h1>
@@ -144,6 +213,20 @@ function Profile({ onLogout, onProfileUpdated }) {
         </form>
  
       </section>
+      ) : (
+        <section className="profile-panel section-panel">
+          <div className="section-heading">
+            <span><ActiveSectionIcon /></span>
+            <h1>{sectionDetails[activeSection].title}</h1>
+          </div>
+          <div className="empty-state">
+            <div className="empty-state-icon"><ActiveSectionIcon /></div>
+            <h2>Nothing here yet</h2>
+            <p>{sectionDetails[activeSection].message}</p>
+            <span>This section is ready to connect when its backend module is added.</span>
+          </div>
+        </section>
+      )}
     </main>
   )
 }

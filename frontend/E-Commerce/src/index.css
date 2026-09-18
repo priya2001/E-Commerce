@@ -54,7 +54,7 @@ button { color: inherit; }
   box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
 }
 
-.search-box span { font-size: 25px; line-height: 1; }
+.search-box > svg { flex: 0 0 auto; font-size: 19px; }
 .search-box input { width: 100%; border: 0; outline: 0; font-size: 14px; }
 
 .header-actions {
@@ -135,8 +135,9 @@ button { color: inherit; }
 }
 
 .menu-heading { border-bottom: 1px solid #f0f0f0; }
+.menu-heading:hover, .menu-heading.active { color: #2874f0; background: #f5faff; }
 .menu-arrow { margin-left: auto; color: #777; font-size: 25px; }
-.menu-icon { min-width: 20px; color: #2874f0; font-size: 20px; text-align: center; }
+.menu-icon { min-width: 20px; color: #2874f0; font-size: 20px; text-align: center; display: inline-flex; }
 
 .menu-section { padding: 18px 0 10px; border-bottom: 1px solid #f0f0f0; }
 .menu-section h2 {
@@ -241,6 +242,51 @@ button { color: inherit; }
 .faq-section h3 { margin: 0 0 8px; font-size: 14px; }
 .faq-section p { margin: 0 0 22px; color: #555; font-size: 13px; line-height: 1.55; }
 
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.section-heading span {
+  color: #2874f0;
+  font-size: 26px;
+}
+
+.section-heading svg, .empty-state-icon svg, .otp-icon svg { display: block; }
+
+.section-heading h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.empty-state {
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 76px;
+  height: 76px;
+  margin-bottom: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #2874f0;
+  background: #eaf2ff;
+  font-size: 34px;
+}
+
+.empty-state h2 { margin: 0 0 10px; font-size: 19px; }
+.empty-state p { margin: 0 0 8px; color: #555; }
+.empty-state > span { color: #878787; font-size: 13px; }
+
 .profile-loading {
   width: min(1240px, calc(100% - 32px));
   margin: 18px auto;
@@ -318,8 +364,8 @@ button { color: inherit; }
   .search-box { order: 3; flex-basis: 100%; max-width: none; }
   .header-action:first-child, .chevron { display: none; }
   .account-layout { width: calc(100% - 24px); grid-template-columns: 1fr; }
-  .account-menu { display: none; }
-  .hello-card { margin-bottom: 0; }
+  .account-menu { max-height: 330px; overflow-y: auto; }
+  .hello-card { margin-bottom: 12px; }
   .profile-panel { min-height: 0; padding: 25px 20px; }
   .profile-form input:not([type="radio"]) { width: 100%; }
   .read-only-note { display: none; }

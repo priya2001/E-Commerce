@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { FiCheck } from 'react-icons/fi'
 import { verifyOtp } from '../services/authApi'
 
 function VerifyOtp({ email, onVerified, onBack }) {
@@ -23,7 +24,7 @@ function VerifyOtp({ email, onVerified, onBack }) {
 
   return (
     <div className="auth-form otp-form">
-      <div className="otp-icon">✓</div>
+      <div className="otp-icon"><FiCheck /></div>
       <h1>Verify OTP</h1>
       <p className="otp-description">
         Enter the testing OTP for <strong>{email}</strong>
