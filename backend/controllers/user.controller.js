@@ -24,7 +24,7 @@ const updateProfile = async (req, res) => {
         const user = await User.findByIdAndUpdate(
             req.userId,
             { name, phone, gender },
-            { new: true, runValidators: true }
+            { returnDocument: "after", runValidators: true }
         ).select("-password");
 
         if (!user) {

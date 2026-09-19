@@ -28,7 +28,7 @@ const create = async (categoryData) => {
 
 const updateById = async (id, categoryData) => {
     return await Category.findByIdAndUpdate(id, categoryData, {
-        new: true,
+        returnDocument: "after",
         runValidators: true,
     });
 };

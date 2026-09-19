@@ -6,7 +6,7 @@ const register = async (userData) =>{
     if (!userData || Object.keys(userData).length === 0) {
         throw new Error("No user data provided");
     }
-    const {name,email,password,role}=userData;
+    const {name,email,password}=userData;
     const existingUser = await userRepository.findUserByEmail(email);
 
     if(existingUser){
@@ -18,7 +18,7 @@ const register = async (userData) =>{
         name,
         email,
         password:hashedpassword,
-        role,
+        role:"customer",
     });
     return newUser;
 };
@@ -42,7 +42,7 @@ const login = async (userData) => {
 
     const token = jwt.sign(
         { id: user._id, role: user.role },
-        process.env.JWT_SECRET || "jwt_secret_key",
+        process.env.JWT_SECRET ,
         { expiresIn: "7d" }
     );
 

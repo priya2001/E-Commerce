@@ -12,7 +12,7 @@ const verifyUser = async (email) => {
   return await User.findOneAndUpdate(
     { email },
     { isVerified: true },
-    { new: true }
+    { returnDocument: "after" }
   );
 };
 

@@ -26,7 +26,7 @@ const create = async (subcategoryData) => {
 
 const updateById = async (id, subcategoryData) => {
     return await Subcategory.findByIdAndUpdate(id, subcategoryData, {
-        new: true,
+        returnDocument: "after",
         runValidators: true,
     }).populate("category", "name slug");
 };
