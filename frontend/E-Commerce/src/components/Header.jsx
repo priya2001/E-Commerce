@@ -1,19 +1,26 @@
 import { FiChevronDown, FiSearch, FiShoppingCart, FiUser } from 'react-icons/fi'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Header({ userName }) {
+  const navigate = useNavigate()
+
   return (
     <header className="store-header">
       <div className="header-inner">
-        <a className="brand" href="#top" aria-label="ShopKart home">
+        <Link className="brand" to="/" aria-label="ShopKart home">
           <strong>ShopKart</strong>
           <span>Explore <em>Plus</em></span>
-        </a>
+        </Link>
         <label className="search-box">
           <FiSearch aria-hidden="true" />
           <input type="search" placeholder="Search for Products, Brands and More" />
         </label>
         <nav className="header-actions" aria-label="Main navigation">
-          <button type="button" className="header-action">
+          <button
+            type="button"
+            className="header-action"
+            onClick={() => navigate(userName ? '/account/profile' : '/login')}
+          >
             <FiUser className="action-icon" aria-hidden="true" />
             <span>{userName || 'Account'}</span>
             <FiChevronDown className="chevron" aria-hidden="true" />
