@@ -11,11 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth",authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/subcategories", subcategoryRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/v1/auth",authRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/subcategories", subcategoryRoutes);
+app.use("/api/v1/products", productRoutes);
 
 app.get('/',(req,res)=>{
     res.send("hello worlds!!");

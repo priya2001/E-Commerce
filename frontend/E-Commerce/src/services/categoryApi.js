@@ -11,6 +11,6 @@ const getJson = async (path) => {
   return data
 }
 
-export const getCategories = () => getJson('/api/categories')
+export const getCategories = () => getJson('/api/v1/categories')
 
-export const getCategoryBySlug = (slug) => getJson(`/api/categories/${slug}`)
+export const getCategoryBySlug = (slug) => getJson(`/api/v1/categories/${slug}`)
