@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema(
         slug:{
             type:String,
             required:true,
+            unique:true,
             lowercase:true,
             trim:true,
         },
@@ -63,7 +64,7 @@ const productSchema = new mongoose.Schema(
 );
         
 productSchema.index({"category":1});
-productSchema.index({"subCategory":1});
+productSchema.index({"subcategory":1});
 
 const Product = mongoose.model("Product",productSchema);
 
