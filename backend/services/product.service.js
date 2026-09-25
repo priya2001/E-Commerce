@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import productRepository from "../repositories/product.repository.js";
 import categoryRepository from "../repositories/category.repository.js";
 import subcategoryRepository from "../repositories/subcategory.repository.js";
+import AppError from "../utils/appError.js";
 
 const createSlug = (value) => {
     return value
@@ -13,13 +14,13 @@ const createSlug = (value) => {
 
 const validateId = (id, label) => {
     if (!mongoose.isValidObjectId(id)) {
-        throw new Error(`Invalid ${label} ID`);
+        throw new AppError(`Invalid ${label} ID`, 400);
     }
 };
 
 const validatePrice = (price, discountPrice) => {
     if (price === undefined || Number(price) < 0) {
-        throw new Error("Valid product price is required");
+        throw new AppError("Valid product price is required", 400);
     }
 
     if (
@@ -27,7 +28,10 @@ const validatePrice = (price, discountPrice) => {
         discountPrice !== null &&
         Number(discountPrice) >= Number(price)
     ) {
-        throw new Error("Discount price must be less than product price");
+        throw new AppError(
+            "Discount price must be less than product price",
+            400
+        );
     }
 };
 
@@ -41,22 +45,23 @@ const validateCategoryAndSubcategory = async (
     const category = await categoryRepository.findById(categoryId);
 
     if (!category) {
-        throw new Error("Category not found");
+        throw new AppError("Category not found", 404);
     }
 
     const subcategory =
         await subcategoryRepository.findById(subcategoryId);
 
     if (!subcategory) {
-        throw new Error("Subcategory not found");
+        throw new AppError("Subcategory not found", 404);
     }
 
     if (
         subcategory.category._id.toString() !==
         categoryId.toString()
     ) {
-        throw new Error(
-            "Subcategory does not belong to selected category"
+        throw new AppError(
+            "Subcategory does not belong to selected category",
+            400
         );
     }
 };
@@ -82,12 +87,16 @@ const getProducts = async (query = {}, includeInactive = false) => {
 };
 
 const getProductBySlug = async (slug) => {
+    if (!slug || !slug.trim()) {
+        throw new AppError("Product slug is required", 400);
+    }
+
     const product = await productRepository.findBySlug(
         slug.toLowerCase()
     );
 
     if (!product || !product.isActive) {
-        throw new Error("Product not found");
+        throw new AppError("Product not found", 404);
     }
 
     return product;
@@ -107,19 +116,22 @@ const createProduct = async (productData) => {
     } = productData;
 
     if (!name || !name.trim()) {
-        throw new Error("Product name is required");
+        throw new AppError("Product name is required", 400);
     }
 
     if (!description || !description.trim()) {
-        throw new Error("Product description is required");
+        throw new AppError("Product description is required", 400);
     }
 
     if (!category || !subcategory) {
-        throw new Error("Category and subcategory are required");
+        throw new AppError(
+            "Category and subcategory are required",
+            400
+        );
     }
 
     if (Number(stock) < 0) {
-        throw new Error("Stock cannot be negative");
+        throw new AppError("Stock cannot be negative", 400);
     }
 
     validatePrice(price, discountPrice);
@@ -135,7 +147,7 @@ const createProduct = async (productData) => {
         await productRepository.findDuplicate(slug);
 
     if (duplicate) {
-        throw new Error("Product slug already exists");
+        throw new AppError("Product slug already exists", 409);
     }
 
     const product = await productRepository.create({
@@ -161,7 +173,7 @@ const updateProduct = async (id, productData) => {
         await productRepository.findById(id);
 
     if (!currentProduct) {
-        throw new Error("Product not found");
+        throw new AppError("Product not found", 404);
     }
 
     const categoryId =
@@ -200,7 +212,7 @@ const updateProduct = async (id, productData) => {
     validatePrice(price, discountPrice);
 
     if (Number(stock) < 0) {
-        throw new Error("Stock cannot be negative");
+        throw new AppError("Stock cannot be negative", 400);
     }
 
     const duplicate =
@@ -210,7 +222,7 @@ const updateProduct = async (id, productData) => {
         );
 
     if (duplicate) {
-        throw new Error("Product slug already exists");
+        throw new AppError("Product slug already exists", 409);
     }
 
     return await productRepository.updateById(id, {
@@ -237,8 +249,9 @@ const updateProductStatus = async (id, isActive) => {
     validateId(id, "product");
 
     if (typeof isActive !== "boolean") {
-        throw new Error(
-            "isActive must be true or false"
+        throw new AppError(
+            "isActive must be true or false",
+            400
         );
     }
 
@@ -248,7 +261,7 @@ const updateProductStatus = async (id, isActive) => {
         });
 
     if (!product) {
-        throw new Error("Product not found");
+        throw new AppError("Product not found", 404);
     }
 
     return product;
@@ -261,7 +274,7 @@ const deleteProduct = async (id) => {
         await productRepository.deleteById(id);
 
     if (!product) {
-        throw new Error("Product not found");
+        throw new AppError("Product not found", 404);
     }
 
     return product;
