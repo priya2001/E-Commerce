@@ -5,6 +5,8 @@ import userRoutes from "./routes/user.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import subcategoryRoutes from "./routes/subcategory.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import notFoundMiddleware from "./middlewares/notFound.middleware.js";
+import errorHandler from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -20,5 +22,8 @@ app.use("/api/v1/products", productRoutes);
 app.get('/',(req,res)=>{
     res.send("hello worlds!!");
 })
+
+app.use(notFoundMiddleware);
+app.use(errorHandler);
 
 export default app;
