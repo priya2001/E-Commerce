@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import categoryRepository from "../repositories/category.repository.js";
 import subcategoryRepository from "../repositories/subcategory.repository.js";
+import AppError from "../utils/appError.js";
 
 const createSlug = (value) => {
     return value
@@ -12,7 +13,7 @@ const createSlug = (value) => {
 
 const validateId = (id, label) => {
     if (!mongoose.isValidObjectId(id)) {
-        throw new Error(`Invalid ${label} ID`);
+        throw new AppError(`Invalid ${label} ID`, 400);
     }
 };
 
@@ -24,7 +25,7 @@ const getSubcategories = async (categoryId, includeInactive = false) => {
         const category = await categoryRepository.findById(categoryId);
 
         if (!category || (!includeInactive && !category.isActive)) {
-            throw new Error("Parent category not found");
+            throw new AppError("Parent category not found", 404);
         }
 
         filter.category = categoryId;
@@ -37,14 +38,17 @@ const createSubcategory = async (subcategoryData) => {
     const { name, category, image = "" } = subcategoryData;
 
     if (!name || !name.trim() || !category) {
-        throw new Error("Subcategory name and category are required");
+        throw new AppError(
+            "Subcategory name and category are required",
+            400
+        );
     }
 
     validateId(category, "category");
     const parentCategory = await categoryRepository.findById(category);
 
     if (!parentCategory) {
-        throw new Error("Parent category not found");
+        throw new AppError("Parent category not found", 404);
     }
 
     const cleanName = name.trim();
@@ -52,7 +56,10 @@ const createSubcategory = async (subcategoryData) => {
     const duplicate = await subcategoryRepository.findDuplicate(category, slug);
 
     if (duplicate) {
-        throw new Error("Subcategory slug already exists in this category");
+        throw new AppError(
+            "Subcategory slug already exists in this category",
+            409
+        );
     }
 
     return await subcategoryRepository.create({
@@ -68,7 +75,7 @@ const updateSubcategory = async (id, subcategoryData) => {
     const currentSubcategory = await subcategoryRepository.findById(id);
 
     if (!currentSubcategory) {
-        throw new Error("Subcategory not found");
+        throw new AppError("Subcategory not found", 404);
     }
 
     const categoryId = subcategoryData.category || currentSubcategory.category._id;
@@ -77,7 +84,7 @@ const updateSubcategory = async (id, subcategoryData) => {
     const parentCategory = await categoryRepository.findById(categoryId);
 
     if (!parentCategory) {
-        throw new Error("Parent category not found");
+        throw new AppError("Parent category not found", 404);
     }
 
     const name = subcategoryData.name?.trim() || currentSubcategory.name;
@@ -85,7 +92,10 @@ const updateSubcategory = async (id, subcategoryData) => {
     const duplicate = await subcategoryRepository.findDuplicate(categoryId, slug, id);
 
     if (duplicate) {
-        throw new Error("Subcategory slug already exists in this category");
+        throw new AppError(
+            "Subcategory slug already exists in this category",
+            409
+        );
     }
 
     return await subcategoryRepository.updateById(id, {
@@ -100,13 +110,13 @@ const updateSubcategoryStatus = async (id, isActive) => {
     validateId(id, "subcategory");
 
     if (typeof isActive !== "boolean") {
-        throw new Error("isActive must be true or false");
+        throw new AppError("isActive must be true or false", 400);
     }
 
     const subcategory = await subcategoryRepository.updateById(id, { isActive });
 
     if (!subcategory) {
-        throw new Error("Subcategory not found");
+        throw new AppError("Subcategory not found", 404);
     }
 
     return subcategory;
@@ -117,7 +127,7 @@ const deleteSubcategory = async (id) => {
     const subcategory = await subcategoryRepository.deleteById(id);
 
     if (!subcategory) {
-        throw new Error("Subcategory not found");
+        throw new AppError("Subcategory not found", 404);
     }
 
     return subcategory;
