@@ -1,72 +1,49 @@
 import authservice from "../services/auth.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
-const register = async (req,res)=>{
-    try{
-        const user = await authservice.register(req.body);
-        res.status(201).json({
-            success:true,
-            message:"user registered scuccessfully",
-            user:{
-                id:user._id,
-                name:user.name,
-                email:user.email,
-                role:user.role,
-            },
+const register = asyncHandler(async (req, res) => {
+    const user = await authservice.register(req.body);
 
-        });
-    }
-        catch(error){
-            res.status(400).json({
-                success:false,
-                message:error.message,
-            });
-            
-        }
-}
+    res.status(201).json({
+        success: true,
+        message: "User registered successfully",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        },
+    });
+});
 
-const login = async (req,res)=>{
-    try{
-        const { user, token } = await authservice.login(req.body);
-        res.status(200).json({
-            success:true,
-            message:"user logged in successfully",
-            token,
-            user:{
-                id:user._id,
-                name:user.name,
-                email:user.email,
-                role:user.role,
-            },
-        });
-    }
-    catch(error){
-        console.error(error);
-        res.status(400).json({
-            success:false,
-            message:error.message,
-        });
-    }
-}
+const login = asyncHandler(async (req, res) => {
+    const { user, token } = await authservice.login(req.body);
 
-const verifyOtp = async (req,res)=>{
-    try {
-        const user = await authservice.verifyOtp(req.body);
-        res.status(200).json({
-            success:true,
-            message:"OTP verified successfully",
-            user:{
-                id:user._id,
-                name:user.name,
-                email:user.email,
-            },
-        });
-    }
-    catch(error){
-        res.status(400).json({
-            success:false,
-            message:error.message,
-        });
-    }
-}
+    res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        },
+    });
+});
 
-export default {register,login,verifyOtp};
+const verifyOtp = asyncHandler(async (req, res) => {
+    const user = await authservice.verifyOtp(req.body);
+
+    res.status(200).json({
+        success: true,
+        message: "OTP verified successfully",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        },
+    });
+});
+
+export default { register, login, verifyOtp };
