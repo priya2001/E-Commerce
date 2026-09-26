@@ -1,30 +1,25 @@
 import jwt from "jsonwebtoken";
+import AppError from "../utils/appError.js";
 
 const protect = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({
-            success: false,
-            message: "Please login first",
-        });
+        return next(new AppError("Please login first", 401));
     }
 
     try {
         const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(
             token,
-            process.env.JWT_SECRET 
+            process.env.JWT_SECRET
         );
 
         req.userId = decoded.id;
         req.userRole = decoded.role;
         next();
-    } catch (error) {
-        return res.status(401).json({
-            success: false,
-            message: "Invalid or expired token",
-        });
+    } catch {
+        return next(new AppError("Invalid or expired token", 401));
     }
 };
 
